@@ -59,17 +59,21 @@ public class aufgabe1 {
         System.out.print("Search for query: ");
         String input = "";
         while(!(input = scanner.nextLine()).equals("")) {
-            String[] arguments = input.substring(input.indexOf('(') + 1, input.indexOf(')')).split(",");
-            List<Term> terms = Arrays.stream(arguments)
-                    .map(x -> KB.domain.getConstants().contains(x) ? new Constant(x) : new Variable("x"))
-                    .collect(Collectors.toList());
-            Predicate query = new Predicate(input.split("\\(")[0], terms);
-            InferenceResult answer = KB.ask(query);
-            if(answer.isTrue()) {
-                System.out.println("\033[0;32mStatement is true\033[0m");
-                answer.getProofs().stream().filter(x -> !x.getAnswerBindings().isEmpty()).forEach(System.out::println);
-            } else {
-                System.out.println("\033[0;31mStatement is wrong or no solutions are found\033[0m");
+            try {
+                String[] arguments = input.substring(input.indexOf('(') + 1, input.indexOf(')')).split(",");
+                List<Term> terms = Arrays.stream(arguments)
+                        .map(x -> KB.domain.getConstants().contains(x) ? new Constant(x) : new Variable("x"))
+                        .collect(Collectors.toList());
+                Predicate query = new Predicate(input.split("\\(")[0], terms);
+                InferenceResult answer = KB.ask(query);
+                if(answer.isTrue()) {
+                    System.out.println("\033[0;32mStatement is true\033[0m");
+                    answer.getProofs().stream().filter(x -> !x.getAnswerBindings().isEmpty()).forEach(System.out::println);
+                } else {
+                    System.out.println("\033[0;31mStatement is wrong or no solutions are found\033[0m");
+                }
+            } catch(Exception e) {
+                System.out.println("\033[0;31mInvalid Query\033[0m");
             }
             System.out.print("Search for query: ");
         }
